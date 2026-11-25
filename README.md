@@ -35,7 +35,7 @@ Dev window (local grade, kit `grade-local --driver process`, reproduced byte for
 
 The local research simulator (an independent re-implementation of the replay model) scores the same settings at +0.949 SOL; the 0.23 SOL gap is the seeded 2% transaction-failure lottery — five coins' buys filled in one system and failed in the other — not a modelling difference (58 of 63 coins agree to < 0.001 SOL). The final window re-rolls that lottery with its own seed.
 
-Stress test (`grade-local --stress 10`, rebuilt copies of the dev window): median, p10, p90 to be added after the run finishes.
+Stress test (`grade-local --stress 10`, rebuilt copies of the dev window): **median −0.14 SOL, p10 −0.75, p90 +0.21 SOL; 7 of 10 copies lost money; the dev score sits above all 10 copies** (kit warnings: dev score above 90% of copies; half or more copies lost money). The dev score depends heavily on this window's own coins — expect roughly −0.15 to +0.2 SOL on a fresh window, not +0.72. Yesterday's sibling bot stressed at median +0.02 SOL (p10 −0.34, p90 +0.25).
 
 For comparison on the same dev window: our two sibling first-light bots scored +0.5089 and +0.6033 SOL (grade-local); the current dev board leader sits at +1.07 SOL. House baselines all lose money (momentum −9.49, sniper −0.47, reversion −4.00 SOL).
 
