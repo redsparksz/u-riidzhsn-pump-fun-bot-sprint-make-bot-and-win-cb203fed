@@ -21,21 +21,21 @@ Two other legs were built, measured, and rejected on the dev window (they stay i
 
 ## Exits
 
-- Sell everything at +35%; the partial take-profit at +40% only ever fires on a one-batch gap-up past +35% — banking half at +10%/+20% cost money on every variant tested
+- Take half at +10%; sell everything at +30%
 - Stop-loss −3%
 - Trailing stop: once up ≥ 5%, exit on an 8% pullback from the best value
-- Exit at once if the creator sells while held; exit after 25 slots with no trade; max hold 250 slots
-- The loose exits are the second half of the edge: stale 25 (not 10) and hold 250 (not 90) together added +0.24 SOL on the dev window, because most runners need room to breathe before they pop
+- Exit at once if the creator sells while held; exit after 10 slots with no trade; max hold 90 slots
+- This is the tight-exits variant of the same first-light entry (see the `main` branch for the loose-exits variant at dev +0.718 SOL). The tight exits give up dev PnL but survive surrogate windows far better: stress median +0.03 SOL with 4/10 copies losing, vs the loose variant's median −0.14 with 7/10 losing.
 
 All arithmetic is integer (`bigint`) on the harness's own reserve units, so two runs on the same data produce identical orders. No network, no wall clock, no randomness, no files.
 
 ## Results
 
-Dev window (local grade, kit `grade-local --driver process`, reproduced byte for byte twice): **net PnL +0.7177 SOL (+7.18%, 90% interval +0.158 .. +1.368 SOL), 122 fills over 60 coins, 60 round trips, win rate 40.0%, max drawdown 1.93%, fees 0.2874 SOL curve + 0.0131 SOL tx** (at 2x fees still +0.4118 SOL). Top-3 coins made 36% of the gains; without them net PnL is +0.26 SOL. Guardrails met (60 coins with a round trip ≥ 0.01 SOL, drawdown ≤ 50%).
+Dev window (local grade, kit `grade-local --driver process`, reproduced byte for byte twice): **net PnL +0.5316 SOL (+5.32%, 90% interval +0.200 .. +0.964 SOL), 112 fills over 49 coins, 49 round trips, win rate 40.8%, max drawdown 0.66%, fees 0.2372 SOL curve + 0.0120 SOL tx** (at 2x fees still +0.2788 SOL). Top-3 coins made 28% of the gains; without them net PnL is +0.30 SOL. Guardrails met (49 coins with a round trip ≥ 0.01 SOL, drawdown ≤ 50%).
 
 The local research simulator (an independent re-implementation of the replay model) scores the same settings at +0.949 SOL; the 0.23 SOL gap is the seeded 2% transaction-failure lottery — five coins' buys filled in one system and failed in the other — not a modelling difference (58 of 63 coins agree to < 0.001 SOL). The final window re-rolls that lottery with its own seed.
 
-Stress test (`grade-local --stress 10`, rebuilt copies of the dev window): **median −0.14 SOL, p10 −0.75, p90 +0.21 SOL; 7 of 10 copies lost money; the dev score sits above all 10 copies** (kit warnings: dev score above 90% of copies; half or more copies lost money). The dev score depends heavily on this window's own coins — expect roughly −0.15 to +0.2 SOL on a fresh window, not +0.72. Yesterday's sibling bot stressed at median +0.02 SOL (p10 −0.34, p90 +0.25).
+Stress test (`grade-local --stress 10`, rebuilt copies of the dev window): **median +0.03 SOL, p10 −0.48, p90 +0.30 SOL; 4 of 10 copies lost money; the dev score sits above all 10 copies** (kit warning: dev score above 90% of copies). Expect roughly 0 to +0.1 SOL on a fresh window — a far better centre than the loose variant's median −0.14, at the cost of 0.19 SOL of dev PnL.
 
 For comparison on the same dev window: our two sibling first-light bots scored +0.5089 and +0.6033 SOL (grade-local); the current dev board leader sits at +1.07 SOL. House baselines all lose money (momentum −9.49, sniper −0.47, reversion −4.00 SOL).
 
