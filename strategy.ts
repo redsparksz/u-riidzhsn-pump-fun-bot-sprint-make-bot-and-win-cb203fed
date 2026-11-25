@@ -143,7 +143,7 @@ export const DEFAULT_PARAMS: Params = {
 
   useFirstLight: true,
   flMinAge: 0,
-  flMaxAge: 4,
+  flMaxAge: 3,
   flMinBuyers: 11,
   flMinNetSol: 2,
   flMinRunupBps: 300,
@@ -180,16 +180,16 @@ export const DEFAULT_PARAMS: Params = {
   // +35%; cut at -3%; trail 8% once up 5%; leave after 25 quiet slots or
   // 250 slots held, whichever comes first. Letting winners run to +35% and
   // giving positions room to breathe beat every tighter exit tested.
-  tp1Bps: 4000,
-  tp1PartBps: 7000,
+  tp1Bps: 1000,
+  tp1PartBps: 5000,
   slAfterTp1Bps: 0,
-  tpBps: 3500,
+  tpBps: 3000,
   slBps: 300,
   trailArmBps: 500,
   trailBps: 800,
-  maxHold: 250,
+  maxHold: 90,
   exitOnDevSell: true,
-  staleSlots: 25,
+  staleSlots: 10,
 };
 
 const BPS = 10_000n;
