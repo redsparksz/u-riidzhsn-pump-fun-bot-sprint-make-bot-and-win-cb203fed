@@ -61,6 +61,8 @@ export interface Params {
   maxRealSol: number;
   /** Slippage allowed on buys (bps). */
   buySlippageBps: number;
+  /** A buy that failed or was rejected may be tried again while its entry window is open. */
+  retryFailedBuys: boolean;
 
   /** First-light leg on/off. */
   useFirstLight: boolean;
@@ -133,6 +135,11 @@ export const DEFAULT_PARAMS: Params = {
   minRealSol: 3,
   maxRealSol: 60,
   buySlippageBps: 10_000,
+  // Measured and REJECTED across 3 failure-draw seeds (sim): retrying a
+  // failed buy recovers the trade at a worse price and displaces a fresh
+  // first-light entry — mean -0.014 SOL vs not retrying (-0.038 / -0.004 /
+  // 0.000). The code stays, switched off, so the measurement can repeat.
+  retryFailedBuys: false,
 
   useFirstLight: true,
   flMinAge: 0,
@@ -345,6 +352,11 @@ export function createStrategy(p: Params = DEFAULT_PARAMS): Bot {
       }
 
       // Reconcile fills: learn what landed, drop bookkeeping for what closed.
+      // When retryFailedBuys is on, a buy that failed or was rejected is NOT
+      // a buy: the coin stays eligible, so the next batch may try again while
+      // its entry window is still open (the replay drops ~2% of transactions
+      // at random). Measured across 3 failure-draw seeds, retrying is slightly
+      // negative (-0.014 SOL mean), so the flag ships OFF.
       for (const f of batch.fills) {
         if (f.client_id.startsWith('_')) {
           held.delete(f.mint);
@@ -361,6 +373,10 @@ export function createStrategy(p: Params = DEFAULT_PARAMS): Bot {
             devSoldAtOpen: coins.get(f.mint)?.devSold ?? false,
             tookTp1: false,
           });
+        }
+        if (p.retryFailedBuys && f.side === 'buy' && f.status !== 'filled') {
+          const c = coins.get(f.mint);
+          if (c !== undefined) c.bought = false;
         }
       }
       for (const mint of [...selling]) if (!hasPending(state, mint, 'sell')) selling.delete(mint);
